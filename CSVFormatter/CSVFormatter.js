@@ -12,13 +12,29 @@ Ext.ux.Exporter.CSVFormatter = Ext.extend(Ext.ux.Exporter.Formatter, {
     console.log(colModel);
     console.log(items);
     var cols = this.buildColumns(colModel);
-    return cols;
+    return cols + "\n" + this.buildRows(colModel, items);
   },
   buildColumns: function(colModel) {
     var cols = [];
     Ext.each(colModel.config, function(column) {
+      // todo: check hidden props
       cols.push(column.header);
     }, this);
+    return cols.join(",");
+  },
+  buildRows: function(colModel, items) {
+    var rows = [];
+    Ext.each(items, function(row) {
+      rows.push(this.buildRow(colModel, row));
+    }, this);
+    return rows.join("\n");
+  },
+  buildRow: function(colModel, row) {
+    var cols = [];
+    Ext.each(colModel.config, function(column) {
+      // todo: check hidden props
+      cols.push(row.data[column.dataIndex]);
+    });
     return cols.join(",");
   }
 });
