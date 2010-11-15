@@ -85,3 +85,56 @@ Ext.ux.Exporter.Button = Ext.extend(Ext.Button, {
 });
 
 Ext.reg('exportbutton', Ext.ux.Exporter.Button);
+
+/**
+ * @class Ext.ux.Exporter.ToolButton
+ * @extends Ext.Button
+ * @author Erik Eloff, inspired of Ext.ux.Exporter.Button
+ *
+ * Specialised Button class that allows downloading of data via data: urls.
+ * This version integrates better within a toolbar and opens the exported
+ * data in a popup window.
+ *
+ * Pass it either an Ext.Component subclass with a 'store' property, or just a store:
+ * new Ext.ux.Exporter.Button({component: someGrid});
+ * new Ext.ux.Exporter.Button({store: someStore});
+ * @cfg {Ext.Component} component The component the store is bound to
+ * @cfg {Ext.data.Store} store The store to export (alternatively, pass a component with a store property)
+ */
+Ext.ux.Exporter.ToolbarButton = Ext.extend(Ext.Button, {
+  constructor: function(config) {
+    config = config || {};
+
+    Ext.applyIf(config, {
+      exportFunction: 'exportGrid',
+      disabled      : true,
+      text          : 'Download',
+      cls           : 'download'
+    });
+
+    if (config.store == undefined && config.component != undefined) {
+      Ext.applyIf(config, {
+        store: config.component.store
+      });
+    } else {
+      Ext.applyIf(config, {
+        component: {
+          store: config.store
+        }
+      });
+    }
+
+    Ext.ux.Exporter.Button.superclass.constructor.call(this, config);
+
+    if (this.store && Ext.isFunction(this.store.on)) {
+      this.handler = function () {
+        // todo: change mime type to allow download (does not work in many browsers)
+        // var popup = window.open('data:application/vnd.ms-excel;base64,' + Ext.ux.Exporter[config.exportFunction](this.component, null, config));
+        var popup = window.open('data:text/plain;base64,' + Ext.ux.Exporter[config.exportFunction](this.component, null, config));
+      };
+      this.enable();
+    }
+  }
+});
+
+Ext.reg('exporttoolbarbutton', Ext.ux.Exporter.ToolbarButton);
