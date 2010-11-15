@@ -107,9 +107,10 @@ Ext.ux.Exporter.ToolbarButton = Ext.extend(Ext.Button, {
 
     Ext.applyIf(config, {
       exportFunction: 'exportGrid',
-      disabled      : true,
-      text          : 'Download',
-      cls           : 'download'
+      formatter: null,
+      disabled: true,
+      text: 'Download',
+      cls: 'download'
     });
 
     if (config.store == undefined && config.component != undefined) {
@@ -130,7 +131,7 @@ Ext.ux.Exporter.ToolbarButton = Ext.extend(Ext.Button, {
       this.handler = function () {
         // todo: change mime type to allow download (does not work in many browsers)
         // var popup = window.open('data:application/vnd.ms-excel;base64,' + Ext.ux.Exporter[config.exportFunction](this.component, null, config));
-        var popup = window.open('data:text/plain;base64,' + Ext.ux.Exporter[config.exportFunction](this.component, null, config));
+        var popup = window.open('data:text/plain;base64,' + Ext.ux.Exporter[config.exportFunction](this.component, this.formatter, config));
       };
       this.enable();
     }
