@@ -4,5 +4,7 @@
  * Specialised Format class for outputting .csv files
  */
 Ext.ux.Exporter.CSVFormatter = Ext.extend(Ext.ux.Exporter.Formatter, {
-  
+  format: function(store, config) {
+    return "test";
+  }
 });

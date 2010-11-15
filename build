@@ -19,3 +19,5 @@ ExcelFormatter/Workbook.js
 ExcelFormatter/Worksheet.js
 ExcelFormatter/Cell.js
 ExcelFormatter/Style.js
+
+CSVFormatter/CSVFormatter.js
