@@ -5,6 +5,20 @@
  */
 Ext.ux.Exporter.CSVFormatter = Ext.extend(Ext.ux.Exporter.Formatter, {
   format: function(store, config) {
-    return "test";
+    console.log("Formatter");
+    console.log(store);
+    var colModel = store.colModel;
+    var items = store.store.data.items;
+    console.log(colModel);
+    console.log(items);
+    var cols = this.buildColumns(colModel);
+    return cols;
+  },
+  buildColumns: function(colModel) {
+    var cols = [];
+    Ext.each(colModel.config, function(column) {
+      cols.push(column.header);
+    }, this);
+    return cols.join(",");
   }
 });
