@@ -7,16 +7,14 @@ Ext.ux.Exporter.CSVFormatter = Ext.extend(Ext.ux.Exporter.Formatter, {
   format: function(store, config) {
     console.log("Formatter");
     console.log(store);
-    var colModel = store.colModel;
-    var items = store.store.data.items;
-    console.log(colModel);
+    var items = store.data.items;
     console.log(items);
-    var cols = this.buildColumns(colModel);
-    return cols + "\n" + this.buildRows(colModel, items);
+    var cols = this.buildColumns(config.columns);
+    return cols + "\n" + this.buildRows(config.columns, items);
   },
-  buildColumns: function(colModel) {
+  buildColumns: function(columns) {
     var cols = [];
-    Ext.each(colModel.config, function(column) {
+    Ext.each(columns, function(column) {
       // todo: check hidden props
       if (!column.hidden) {
         var stripped = this.stripTags(column.header);
@@ -26,19 +24,24 @@ Ext.ux.Exporter.CSVFormatter = Ext.extend(Ext.ux.Exporter.Formatter, {
     }, this);
     return cols.join(",");
   },
-  buildRows: function(colModel, items) {
+  buildRows: function(columns, items) {
     var rows = [];
     Ext.each(items, function(row) {
-      rows.push(this.buildRow(colModel, row));
+      rows.push(this.buildRow(columns, row));
     }, this);
     return rows.join("\n");
   },
-  buildRow: function(colModel, row) {
+  buildRow: function(columns, row) {
     var cols = [];
-    Ext.each(colModel.config, function(column) {
+    Ext.each(columns, function(column) {
       // todo: check hidden props
       if (!column.hidden) {
-        var stripped = this.stripTags((row.data[column.dataIndex]));
+        var data = row.data[column.dataIndex];
+        // the cell has a custom object instead of a string, use its text attribute
+        if (data.text !== undefined) {
+          data = data.text;
+        }
+        var stripped = this.stripTags(data);
         var escapedText = this.escapeTextSeperator(stripped);
         cols.push(escapedText);
       }
